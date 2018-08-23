@@ -2,4 +2,5 @@
 /composer.lock
 /vendor
 /classes/php
+/public/index.php
 /views/*.xsl
