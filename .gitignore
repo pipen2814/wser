@@ -3,4 +3,5 @@
 /vendor
 /classes/php
 /public/index.php
+/public/.htaccess
 /views/*.xsl
