@@ -6,12 +6,12 @@ use php\orm\BaseORM;
 /**
  * Class Usuarios
  *
- * ORM para la tabla usuarios
+ * ORM para la tabla etiquetas
  *
  * @package crm
  * @subpackage orm
  */
-class Accounts extends \crm\orm\defs\Accounts {
+class Labels extends \crm\orm\defs\Labels {
 
 }
 ?>

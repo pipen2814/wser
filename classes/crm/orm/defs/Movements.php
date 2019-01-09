@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace crm\orm\defs;
 
@@ -21,6 +21,7 @@ class Movements extends BaseORM{
 		"id_cuenta" => "idCuenta",
 		"id_usuario" => "idUsuario",
 		"movimiento" => "movimiento",
+		"tipo" => "tipo",
 		"importe" => "importe",
 		"fecha_creacion" => "fechaCreacion",
 		"fecha_informe" => "fechaInforme",

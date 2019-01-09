@@ -1,0 +1,92 @@
+<section class="content">
+
+<!-- ULTIMOS MOVIMIENTOS -->
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">Editar movimiento</h3>
+			</div>
+			<div class="box-body">
+
+				<form role="form">
+					<!-- text input -->
+					<div class="form-group">
+						<label>Concepto</label>
+						<input id="movimiento" name="movimiento" type="text" class="form-control" placeholder="Concepto ..." value="{{movement.movimiento}}">
+					</div>
+					<div class="form-group">
+						<label>Tipo de movimiento</label>
+						<select id="tipo" class="form-control">
+							<option value="0" {{ (movement.tipo == 0) ? 'selected' : '' }}>Gasto</option>
+							<option value="1" {{ (movement.tipo == 1) ? 'selected' : '' }}>Ingreso</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Importe</label>
+						<input id="precio" name="precio" type="text" class="form-control" placeholder="Importe ..." value="{{movement.importe}}" >
+					</div>
+					<div class="form-group">
+						<label>Cuenta</label>
+						<select id="id_cuenta" class="form-control">
+							{% for account in accounts %}
+							<option value="{{ account.id_cuenta }}" {{ (movement.id_cuenta == account.id_cuenta) ? 'selected' : '' }}>{{ account.cuenta }}</option>
+							{% else %}
+							<option>No hay cuentas disponibles</option>
+							{% endfor %}
+						</select>
+					</div>
+					<!--
+					<div class="form-group">
+						<label>Periodicidad</label>
+						<select id="periodicidad" class="form-control">
+							<option value="puntual">Puntual</option>
+							<option value="diaria">Diaria</option>
+							<option value="semanal">Semanal</option>
+							<option value="mensual">Mensual</option>
+							<option value="trimestral">Trimestral</option>
+							<option value="anual">Anual</option>
+						</select>
+					</div>
+					-->
+				</form>
+			</div>
+			<!-- /.box-body -->
+			<div class="box-footer">
+				<button id="saveMovementChanges" type="submit" class="btn btn-info pull-right">Guardar</button>
+			</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+<!-- FIN ULTIMOS MOVIMIENTOS -->
+
+
+
+
+<script>
+$("#saveMovementChanges").click(function(){
+	var url = baseURL+"movements/movements.modify";
+	var json = {
+		apiTK: localStorage.getItem("apiTK"), 
+		usuario: localStorage.getItem("usuario"),
+		accountId:$("#id_cuenta").val(),
+		type:$("#tipo").val(),
+		movement:$("#movimiento").val(),
+		movementId:{{movement.id_movimiento}},
+		price:$("#precio").val()
+	};
+
+	var callback = function(data){
+		if(data.status == 'OK'){
+			alert("El movimiento se ha guardado correctamente.");
+			return;
+		}
+	}
+	genericJSONCall(url, json, callback);
+
+
+});
+</script>
+</section>

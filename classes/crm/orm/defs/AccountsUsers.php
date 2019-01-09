@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace crm\orm\defs;
 

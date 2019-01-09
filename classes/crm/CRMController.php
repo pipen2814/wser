@@ -2,7 +2,7 @@
 
 namespace crm;
 
-use crm\managers\UserManager;
+use crm\factories\Managers;
 use php\Controller;
 use php\Session;
 use crm\models\userModel;
@@ -124,5 +124,9 @@ class CRMController extends Controller {
 
 		return $cssPath;
 	}
+
+	protected function renoveToken($token){
+		return Managers::UserManager()->checkAPIToken($token);
+	}
 }
-?>
+

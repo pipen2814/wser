@@ -1,0 +1,55 @@
+<section class="content">
+
+<!-- EDITOR ETIQUETAS -->
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">Etiquetas</h3>
+			</div>
+			<div class="box-body table-responsive no-padding">
+				<table class="table table-hover">
+					<tbody>
+						<tr>
+							<th>#</th>
+							<th>Etiqueta</th>
+							<th>Color</th>
+						</tr>
+						{% for label in labels %}
+						<tr id="m_{{label.id_etiqueta}}">
+							<td>{{label.id_etiqueta}}</td>
+							<td>{{label.etiqueta}}</td>
+							<td>{{label.color}}</td>
+						</tr>
+						{% else %}
+						<tr>	
+							<td colspan="3">No hay etiquetas disponibles</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div class="box-footer">
+				<button id="addLabel" type="submit" class="btn btn-info pull-left">Nueva etiqueta</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+<!-- FIN EDITOR ETIQUETAS -->
+<script>
+{% for label in labels %}
+$("#m_{{label.id_etiqueta}}").click(function(){
+
+	var conf = {
+		url: baseURL+'interfaz/Labels.getLabel',
+		json: {apiTK: localStorage.getItem("apiTK"), labelId: {{label.id_etiqueta}} },
+		container: $("#app-mainContainer"), 
+		obtainToken: true, 
+		emptyContainer: true
+	};
+	genericInterfaceCall(conf);
+});
+{% endfor %}
+</script>
+</section>

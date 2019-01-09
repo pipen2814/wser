@@ -1,0 +1,370 @@
+<section class="content">
+<div class="row">
+	{% for account in accounts %}
+
+	<div class="col-lg-3 col-xs-6">
+		<!-- small box -->
+		<div id="account_id_{{account.id_cuenta}}" class="small-box {{ account.color }} account_box">
+			<div class="inner">
+				<h3>{{ account.cuenta }}</h3>
+				<p>150</p>
+			</div>
+			<div class="icon">
+				<i class="ion ion-stats-bars"></i>
+			</div>
+			<a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+		</div>
+	</div>
+
+	{% else %}
+	No existen cuentas
+	{% endfor %}
+</div>
+
+<div class="row">
+	<div class="col-md-6">
+		<div class="box box-info">
+			<div class="box-header with-border">
+				<h3 class="box-title">Introducir movimiento</h3>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				<form role="form">
+					<!-- text input -->
+					<div class="form-group">
+						<label>Concepto</label>
+						<input id="movimiento" name="movimiento" type="text" class="form-control" placeholder="Concepto ...">
+					</div>
+					<div class="form-group">
+						<label>Tipo de movimiento</label>
+						<select id="tipo" class="form-control">
+							<option value="0">Gasto</option>
+							<option value="1">Ingreso</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Importe</label>
+						<input id="precio" name="precio" type="text" class="form-control" placeholder="Importe ..." >
+					</div>
+					<div class="form-group">
+						<label>Cuenta</label>
+						<select id="id_cuenta" class="form-control">
+							{% for account in accounts %}
+							<option value="{{ account.id_cuenta }}">{{ account.cuenta }}</option>
+							{% else %}
+							<option>No hay cuentas disponibles</option>
+							{% endfor %}
+						</select>
+					</div>
+					<!--
+					<div class="form-group">
+						<label>Periodicidad</label>
+						<select id="periodicidad" class="form-control">
+							<option value="puntual">Puntual</option>
+							<option value="diaria">Diaria</option>
+							<option value="semanal">Semanal</option>
+							<option value="mensual">Mensual</option>
+							<option value="trimestral">Trimestral</option>
+							<option value="anual">Anual</option>
+						</select>
+					</div>
+					-->
+				</form>
+			</div>
+			<!-- /.box-body -->
+			<div class="box-footer">
+				<button id="addMovement" type="submit" class="btn btn-info pull-right">Guardar</button>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="col-md-6">
+		<div class="box box-info">
+			<div class="box-header with-border">
+				<h3 class="box-title">Evolución de  cuentas</h3>
+			</div>
+			<div class="box-body">
+				<form role="form">	
+					<div class="form-group">
+						<label>Rango de fechas:</label>
+
+						<div class="input-group">
+							<button type="button" class="btn btn-default pull-right" id="daterange-btn">
+								<span>{{monthStart}} - {{monthEnd}}</span>
+								<i class="fa fa-caret-down"></i>
+							</button>
+						</div>
+					</div>
+				</form>
+				<div class="box-body">
+					<div class="chart">
+						<canvas id="barChart" style="height: 230px; width: 548px;" width="548" height="230"></canvas>
+					</div>
+
+					<!-- Barras de progreso horizontales -->
+					<!--
+					<div class="progress">
+						<div class="progress-bar progress-bar-green" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+							<span class="sr-only">40% Complete (success)</span>
+						</div>
+					</div>
+					<div class="progress">
+						<div class="progress-bar progress-bar-aqua" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+							<span class="sr-only">20% Complete</span>
+						</div>
+					</div>
+					<div class="progress">
+						<div class="progress-bar progress-bar-yellow" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+							<span class="sr-only">60% Complete (warning)</span>
+						</div>
+					</div>
+					<div class="progress">
+						<div class="progress-bar progress-bar-red" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+							<span class="sr-only">80% Complete</span>
+						</div>
+					</div>
+					-->
+					<!-- Fin de barras de progreso horizontales -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- ULTIMOS MOVIMIENTOS -->
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">Útimos movimientos</h3>
+
+				<div class="box-tools hidden-xs">
+					<div class="input-group input-group-sm" style="width: 150px;">
+						<input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
+
+						<div class="input-group-btn">
+							<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="box-body table-responsive no-padding">
+				<table class="table table-hover">
+					<tbody>
+						<tr>
+							<th>Cuenta</th>
+							<th>Usuario</th>
+							<th>Fecha</th>
+							<th class="hidden-xs">Concepto</th>
+							<th>Importe</th>
+							<th class="hidden-xs">Etiquetas</th>
+						</tr>
+						{% for movement in movements %}
+						<tr>
+							<td>{{movement.cuenta}}</td>
+							<td>{{movement.usuario}}</td>
+							<td>{{movement.fecha_informe}}</td>
+							<td class="hidden-xs">{{movement.movimiento}}</td>
+							<td style="{% if movement.tipo == 1 %} color:green; {% else %} color:red; {% endif %}">{{movement.importe}}</td>
+							<td class="hidden-xs"><span class="label label-success">Approved</span></td>
+						</tr>
+
+						{% else %}
+						<tr>	
+							<td colspan="6">No hay movimientos disponibles</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- FIN ULTIMOS MOVIMIENTOS -->
+
+
+
+
+<script>
+
+function addMovement(){
+	var url = baseURL+"movements/movements.create";
+	var json = {
+		apiTK: localStorage.getItem("apiTK"), 
+		usuario: localStorage.getItem("usuario"),
+		accountId:$("#id_cuenta").val(),
+		type:$("#tipo").val(),
+		movement:$("#movimiento").val(),
+		price:$("#precio").val()
+	};
+	var callback = function(data){
+		if(data.status == 'OK'){
+			alert("El movimiento se ha guardado correctamente.");
+			$("#movimiento").val("");
+			$("#precio").val("");
+			return;
+		}
+	}
+	genericJSONCall(url, json, callback);
+}
+
+function renovateTK(){
+	var url = baseURL+'login.renovateToken';
+	var callback = function(data){
+		alert("Se ejecuta el callback");
+		if(data.status == 'OK' && data.apiTK){
+			localStorage.setItem("apiTK", data.apiTK);
+		}else{
+			alert("Ha habido un error durante la obtencion del token de conexion.");
+		}
+	}
+	genericJSONCall(url, json, callback);
+}
+
+//Boton para agregar movimiento
+$("#addMovement").click(addMovement);
+
+$('#daterange-btn').daterangepicker(
+		{
+			locale: {
+				"format": "DD/MM/YYYY",
+				"applyLabel": 'Aplicar',
+			"cancelLabel": 'Cancelar',
+			"customRangeLabel": "Personalizar",
+			"daysOfWeek": [
+				"Do",
+				"Lu",
+				"Ma",
+				"Mi",
+				"Ju",
+				"Vi",
+				"Sa"
+			],
+			"firstDay": 1,
+			"monthNames": [
+				"Enero",
+				"Febrero",
+				"Marzo",
+				"Abril",
+				"Mayo",
+				"Junio",
+				"Julio",
+				"Agosto",
+				"Septiembre",
+				"Octubre",
+				"Noviembre",
+				"Diciembre"
+			]
+		},
+		ranges   : {
+			'Hoy'       : [moment(), moment()],
+			'Ayer'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+			'Ultimos 7 dias': [moment().subtract(6, 'days'), moment()],
+			'Ultimos 30 dias': [moment().subtract(29, 'days'), moment()],
+			'Este mes'  : [moment().startOf('month'), moment().endOf('month')],
+			'Ultimo mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+		},
+		//startDate: moment().subtract(29, 'days'),
+		startDate: moment().startOf('month'),
+		endDate  : moment()
+	},
+	function (start, end) {
+		$('#daterange-btn span').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
+		//$('#daterange-btn span').html(start.format('D MMMM, YYYY') + ' - ' + end.format('D MMMM, YYYY'));
+		//alert('START: '+ start.format('YYYY-MM-DD')+", END; "+end.format('YYYY-MM-DD'));
+	}
+);
+
+
+var months = new Array();
+
+{% for month in monthChart.months %}
+months.push('{{month}}');
+{% endfor %}
+
+var incomes = new Array();
+var expenses = new Array();
+
+{% for income in monthChart.incomes %}
+incomes.push('{{income}}');
+{% endfor %}
+
+{% for expense in monthChart.expenses %}
+expenses.push('{{expense}}');
+{% endfor %}
+
+    var barChartCanvas	= $('#barChart').get(0).getContext('2d');
+    var barChart	= new Chart(barChartCanvas);
+    var barChartData = {
+      labels  : months,
+      datasets: [
+        {
+          label               : 'Ingresos',
+          fillColor           : 'rgba(210, 214, 222, 1)',
+          strokeColor         : 'rgba(210, 214, 222, 1)',
+          pointColor          : 'rgba(210, 214, 222, 1)',
+          pointStrokeColor    : '#c1c7d1',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(220,220,220,1)',
+          data                : incomes
+        },
+        {
+          label               : 'Gastos',
+          fillColor           : 'rgba(60,141,188,0.9)',
+          strokeColor         : 'rgba(60,141,188,0.8)',
+          pointColor          : '#3b8bba',
+          pointStrokeColor    : 'rgba(60,141,188,1)',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+          data                : expenses
+        }
+      ]
+    }
+
+    barChartData.datasets[0].fillColor   = '#009551';
+    barChartData.datasets[0].strokeColor = '#00a65a';
+    barChartData.datasets[0].pointColor  = '#00a65a';
+    barChartData.datasets[1].fillColor   = '#dd4b39';
+    barChartData.datasets[1].strokeColor = '#dd4b39';
+    barChartData.datasets[1].pointColor  = '#dd4b39';
+
+    var barChartOptions = {
+      scaleBeginAtZero        : true,
+      scaleShowGridLines      : true,
+      scaleGridLineColor      : 'rgba(0,0,0,.05)',
+      scaleGridLineWidth      : 1,
+      scaleShowHorizontalLines: true,
+      scaleShowVerticalLines  : true,
+      barShowStroke           : true,
+      barStrokeWidth          : 2,
+      barValueSpacing         : 5,
+      barDatasetSpacing       : 1,
+      responsive              : true,
+      maintainAspectRatio     : true
+    };
+
+    barChartOptions.datasetFill = false
+    barChart.Bar(barChartData, barChartOptions)
+
+$.each($('.account_box'), function(index, block){
+	$(block).click(function(){
+		var accountParts = block.id.split("_");
+		var accountId = accountParts.pop();
+
+		var conf = {
+			url: baseURL+'interfaz/Accounts.getAccount',
+			json: {apiTK: localStorage.getItem("apiTK"), accountId: accountId, usuario: localStorage.getItem("usuario") },
+			container: $("#app-mainContainer"), 
+			obtainToken: true, 
+			emptyContainer: true
+		};
+
+		genericInterfaceCall(conf);
+	});
+});
+
+
+
+</script>
+</section>

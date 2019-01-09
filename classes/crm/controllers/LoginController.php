@@ -138,5 +138,27 @@ class LoginController extends CRMController {
 		var_dump('<pre>',  $tk->checkValidToken($_REQUEST['apiTK']));
 		
 	}
+
+	/**
+	 * @api
+	 * Metodo para renovar el token de conexion mientras haya actividad.
+	 *
+	 * @param $model
+	 * @param $args
+	 *
+	 */
+	public function renovateTokenAction(\stdClass $model, $args){
+		$model->status = "OK";
+		try{
+			list($userInformation, $apiTK) = $this->renoveToken($args->apiTK);
+			if($apiTK){
+				$model->apiTK = $apiTK;
+			}else{
+				throw new \Exception("No se pudo crear token");
+			}
+		}catch(\Exception $e){
+			$model->status = "KO";
+			$model->message = "ERROR: ".$e->getMessage();
+		}
+	}
 }
-?>

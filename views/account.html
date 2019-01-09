@@ -1,0 +1,88 @@
+<section class="content">
+
+<!-- ULTIMOS MOVIMIENTOS -->
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">Movimientos en {{account.name}}</h3>
+
+				<div class="box-tools hidden-xs">
+					<div class="input-group input-group-sm" style="width: 150px;">
+						<input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
+
+						<div class="input-group-btn">
+							<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="box-body table-responsive no-padding">
+				<table class="table table-hover">
+					<tbody>
+						<tr>
+							<th>Cuenta</th>
+							<th>Usuario</th>
+							<th>Fecha</th>
+							<th class="hidden-xs">Hora</th>
+							<th class="hidden-xs">Concepto</th>
+							<th>Importe</th>
+							<th class="hidden-xs">Etiquetas</th>
+						</tr>
+						{% for movement in movements %}
+						<tr id="m_{{movement.id_movimiento}}">
+							<td>{{movement.cuenta}}</td>
+							<td>{{movement.usuario}}</td>
+							<td>{{movement.fecha}}</td>
+							<td class="hidden-xs">{{movement.hora}}</td>
+							<td class="hidden-xs">{{movement.movimiento}}</td>
+							<td style="{% if movement.tipo == 1 %} color:green; {% else %} color:red; {% endif %}">{{movement.importe}}</td>
+							<td class="hidden-xs"><span class="label label-success">Approved</span></td>
+						</tr>
+						{% else %}
+						<tr>	
+							<td colspan="7">No hay movimientos disponibles</td>
+						</tr>
+						{% endfor %}
+						{% if moreMovements == 1 %}
+						<tr class="moreMovements">
+							<td colspan="7">
+								<a class="btn btn-moreMovements">
+									<i class="fa fa-repeat"></i> Cargar m&aacute;s
+								</a>
+							</td>
+						</tr>
+						{% endif %}
+
+					</tbody>
+				</table>
+				<script>
+					{% for movement in movements %}
+					$("#m_{{movement.id_movimiento}}").click(function(){
+
+						var conf = {
+							url: baseURL+'interfaz/Movements.getMovement',
+							json: {apiTK: localStorage.getItem("apiTK"), movementId: {{movement.id_movimiento}} },
+							container: $("#app-mainContainer"), 
+							obtainToken: true, 
+							emptyContainer: true
+						};
+						genericInterfaceCall(conf);
+					});
+					{% endfor %}
+				</script>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- FIN ULTIMOS MOVIMIENTOS -->
+
+
+
+
+<script>
+$(".btn-moreMovements").click(function(){
+	$(".moreMovements").remove();
+});
+</script>
+</section>

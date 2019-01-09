@@ -11,7 +11,6 @@ use php\orm\BaseORM;
  * @package crm
  * @subpackage orm
  */
-class Accounts extends \crm\orm\defs\Accounts {
+class Users extends \crm\orm\defs\Users {
 
 }
-?>
