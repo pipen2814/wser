@@ -63,6 +63,12 @@ class AccountsController extends CRMController {
 			$mv['id_movimiento'] = $movement->id_movimiento;
 			$mv['movimiento'] = $movement->movimiento;
 			$mv['importe'] = $movement->importe;
+
+			$category = ORM::Categories()->getByPK($movement->id_categoria);
+			if($category){
+				$mv['categoria'] = $category->categoria;
+			}
+
 			$mv['fecha'] = explode(" ", $movement->fecha_informe)[0];
 			$mv['hora'] = explode(" ", $movement->fecha_informe)[1];
 			$data['movements'][] = $mv;

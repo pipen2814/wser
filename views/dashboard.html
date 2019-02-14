@@ -40,6 +40,7 @@
 						<select id="tipo" class="form-control">
 							<option value="0">Gasto</option>
 							<option value="1">Ingreso</option>
+							<option value="2">Transferencia interna</option>
 						</select>
 					</div>
 					<div class="form-group">
@@ -56,6 +57,17 @@
 							{% endfor %}
 						</select>
 					</div>
+					<div class="form-group">
+						<label>Categor&iacute;a</label>
+						<select id="id_categoria" class="form-control">
+							{% for category in categories %}
+							<option value="{{ category.id_categoria }}">{{ category.categoria }}</option>
+							{% else %}
+							<option>No hay categor&iacute;as disponibles</option>
+							{% endfor %}
+						</select>
+					</div>
+
 					<!--
 					<div class="form-group">
 						<label>Periodicidad</label>
@@ -158,7 +170,7 @@
 							<th>Fecha</th>
 							<th class="hidden-xs">Concepto</th>
 							<th>Importe</th>
-							<th class="hidden-xs">Etiquetas</th>
+							<th class="hidden-xs">Categor&iacute;a</th>
 						</tr>
 						{% for movement in movements %}
 						<tr>
@@ -166,8 +178,8 @@
 							<td>{{movement.usuario}}</td>
 							<td>{{movement.fecha_informe}}</td>
 							<td class="hidden-xs">{{movement.movimiento}}</td>
-							<td style="{% if movement.tipo == 1 %} color:green; {% else %} color:red; {% endif %}">{{movement.importe}}</td>
-							<td class="hidden-xs"><span class="label label-success">Approved</span></td>
+							<td style="{% if movement.tipo == 1 %} color:green; {% elseif movement.tipo == 0 %} color:red; {% else %}color:black; {% endif %}">{{movement.importe}}</td>
+							<td class="hidden-xs">{{movement.categoria}}</td>
 						</tr>
 
 						{% else %}
@@ -194,6 +206,7 @@ function addMovement(){
 		apiTK: localStorage.getItem("apiTK"), 
 		usuario: localStorage.getItem("usuario"),
 		accountId:$("#id_cuenta").val(),
+		categoryId:$("#id_categoria").val(),
 		type:$("#tipo").val(),
 		movement:$("#movimiento").val(),
 		price:$("#precio").val()

@@ -1,5 +1,4 @@
 <section class="content">
-
 <!-- ULTIMOS MOVIMIENTOS -->
 <div class="row">
 	<div class="col-xs-12">
@@ -20,6 +19,7 @@
 						<select id="tipo" class="form-control">
 							<option value="0" {{ (movement.tipo == 0) ? 'selected' : '' }}>Gasto</option>
 							<option value="1" {{ (movement.tipo == 1) ? 'selected' : '' }}>Ingreso</option>
+							<option value="2" {{ (movement.tipo == 2) ? 'selected' : '' }}>Transferencia interna</option>
 						</select>
 					</div>
 					<div class="form-group">
@@ -36,6 +36,17 @@
 							{% endfor %}
 						</select>
 					</div>
+					<div class="form-group">
+						<label>Categor&iacute;a</label>
+						<select id="id_categoria" class="form-control">
+							{% for category in categories %}
+							<option value="{{ category.id_categoria }}" {{ (movement.id_categoria == category.id_categoria) ? 'selected' : '' }}>
+								{{ category.categoria }}
+							</option>
+							{% endfor %}
+						</select>
+					</div>
+
 					<!--
 					<div class="form-group">
 						<label>Periodicidad</label>
@@ -54,6 +65,7 @@
 			<!-- /.box-body -->
 			<div class="box-footer">
 				<button id="saveMovementChanges" type="submit" class="btn btn-info pull-right">Guardar</button>
+				<button id="deleteMovement" type="submit" class="btn btn-info pull-right">Eliminar</button>
 			</div>
 
 			</div>
@@ -75,6 +87,7 @@ $("#saveMovementChanges").click(function(){
 		type:$("#tipo").val(),
 		movement:$("#movimiento").val(),
 		movementId:{{movement.id_movimiento}},
+		categoryId:$("#id_categoria").val(),
 		price:$("#precio").val()
 	};
 
@@ -88,5 +101,29 @@ $("#saveMovementChanges").click(function(){
 
 
 });
+
+$("#deleteMovement").click(function(){
+	var url = baseURL+"movements/movements.delete";
+	var json = {
+		apiTK: localStorage.getItem("apiTK"), 
+		usuario: localStorage.getItem("usuario"),
+		accountId:$("#id_cuenta").val(),
+		movementId:{{movement.id_movimiento}}
+	};
+
+	var callback = function(data){
+		if(data.status == 'OK'){
+			alert("El movimiento ha sido eliminado correctamente.");
+			return;
+		}
+	}
+	if(confirm("¿Confirmas que deseas eliminar este el movimiento?")){
+		genericJSONCall(url, json, callback);
+	}
+
+
+});
+
+
 </script>
 </section>

@@ -41,6 +41,7 @@ class MovementsController extends CRMController {
 			$mv['id_movimiento'] = $movement->idMovimiento;
 			$mv['movimiento'] = $movement->movimiento;
 			$mv['importe'] = $movement->importe;
+			$mv['id_categoria'] = $movement->idCategoria;
 			$mv['fecha'] = explode(" ", $movement->fechaInforme)[0];
 			$mv['hora'] = explode(" ", $movement->fechaInforme)[1];
 			$data['movement'] = $mv;
@@ -58,6 +59,17 @@ class MovementsController extends CRMController {
 			$ac['color'] = ($account->color!=''?$account->color:'bg-aqua');
 			$data['accounts'][] = $ac;
 		}
+
+		$cats = array();
+		$categories = ORM::Categories()->getAll();
+		while($cat = $categories->next()){
+			$cats[] = array(
+				'id_categoria' => $cat->id_categoria
+				,'id_categoria_padre' => $cat->id_categoria_padre
+				,'categoria' => $cat->categoria
+			);
+		}
+		$data['categories'] = $cats;
 
 		$view = new ViewGenerator($page);
 		$view->setData($data);

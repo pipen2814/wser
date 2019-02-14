@@ -27,7 +27,7 @@
 							<th class="hidden-xs">Hora</th>
 							<th class="hidden-xs">Concepto</th>
 							<th>Importe</th>
-							<th class="hidden-xs">Etiquetas</th>
+							<th class="hidden-xs">Categor&iacute;a</th>
 						</tr>
 						{% for movement in movements %}
 						<tr id="m_{{movement.id_movimiento}}">
@@ -37,7 +37,7 @@
 							<td class="hidden-xs">{{movement.hora}}</td>
 							<td class="hidden-xs">{{movement.movimiento}}</td>
 							<td style="{% if movement.tipo == 1 %} color:green; {% else %} color:red; {% endif %}">{{movement.importe}}</td>
-							<td class="hidden-xs"><span class="label label-success">Approved</span></td>
+							<td class="hidden-xs">{{movement.categoria}}</td>
 						</tr>
 						{% else %}
 						<tr>	

@@ -1,0 +1,61 @@
+<section class="content">
+
+<!-- ULTIMOS MOVIMIENTOS -->
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">Editar categor&iacute;a</h3>
+			</div>
+			<div class="box-body">
+
+				<form role="form">
+					<!-- text input -->
+					<div class="form-group">
+						<label>Categor&iacute;a</label>
+						<input id="categoria" name="categoria" type="text" class="form-control" placeholder="Categor&iacute;a ..." value="{{category.categoria}}">
+					</div>
+					<div class="form-group">
+						<label>Categor&iacute;a padre</label>
+						<select id="id_categoria_padre" class="form-control" name="id_categoria_padre">
+							<option value="0" {{ (category.id_categoria_padre == 0) ? 'selected' : '' }}>Es principal</option>
+							{% for cat in categories %}
+							<option value="{{cat.id_categoria}}" {{ (cat.id_categoria == category.id_categoria_padre) ? 'selected' : '' }}>{{cat.categoria}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</form>
+			</div>
+			<!-- /.box-body -->
+			<div class="box-footer">
+				<button id="saveCategoryChanges" type="submit" class="btn btn-info pull-right">Guardar</button>
+			</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+<!-- FIN ULTIMOS MOVIMIENTOS -->
+
+<script>
+$("#saveCategoryChanges").click(function(){
+	var url = baseURL+"categories/categories.create";
+	var json = {
+		apiTK: localStorage.getItem("apiTK")
+		,usuario: localStorage.getItem("usuario")
+		,categoryName:$("#categoria").val()
+		,categoryParentId:$("#id_categoria_padre").val()
+	};
+
+	var callback = function(data){
+		if(data.status == 'OK'){
+			alert("La categoria se ha guardado correctamente.");
+			return;
+		}
+	}
+	genericJSONCall(url, json, callback);
+
+});
+
+</script>
+</section>

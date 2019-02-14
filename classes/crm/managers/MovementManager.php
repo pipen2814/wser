@@ -89,7 +89,7 @@ class MovementManager extends parentClass {
 		return $rs;
 	}
 
-	public static function createNewMovement($userId, $accountId, $type, $movement, $price, $reportDate = null, $groupId = null){
+	public static function createNewMovement($userId, $accountId, $type, $movement, $price, $reportDate = null, $categoryId = null){
 		$movementRegistered = false;
 		//Comprobamos que exista la cuenta, si no existe devolvemos false
 		$account = ORM::Accounts()->getByPK($accountId);
@@ -109,7 +109,7 @@ class MovementManager extends parentClass {
 						$reportDate = date("Y-m-d H:i:s");
 					}
 					$mv->fechaInforme = $reportDate;
-					$mv->idGrupo= $groupId;
+					$mv->idCategoria = $categoryId;
 					$mv->save();
 					$movementRegistered = true;
 				}
@@ -132,6 +132,7 @@ class MovementManager extends parentClass {
 			if($args->has('type'))$mv->tipo = $args->type;
 			if($args->has('movement'))$mv->movimiento = $args->movement;
 			if($args->has("price"))$mv->importe = $args->price;
+			if($args->has("categoryId"))$mv->idCategoria = $args->categoryId;
 			$mv->save();
 		}else{
 			return false;

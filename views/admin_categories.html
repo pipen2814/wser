@@ -1,0 +1,87 @@
+{% macro categoryBlock(category, level) %}
+{% import _self as self %}
+<tr id="m_{{category.id_categoria}}">
+	<td>{{category.id_categoria}}</td>
+	<td>{% for lev in range(0,level) %} *&nbsp;{% endfor %}{{category.categoria}}</td>
+	<td>
+		{% if category.id_categoria_padre == 0 %}
+			No tiene
+		{% else %}
+			{{category.id_categoria_padre}} - {{category.categoria_padre}}
+		{% endif %}
+	</td>
+
+	{% if category.categories %}
+		{% for cat in category.categories %}
+			{{ self.categoryBlock(cat, level+1) }}
+		{% endfor %}
+	{% endif %}
+</tr>
+{% endmacro %}
+{% import _self as macros %}
+
+<section class="content">
+
+<!-- EDITOR CATEGORIAS -->
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">Categor&iacute;as</h3>
+			</div>
+			<div class="box-body table-responsive no-padding">
+				<table class="table table-hover">
+					<tbody>
+						<tr>
+							<th>#</th>
+							<th>Categor&iacute;as</th>
+							<th>Categor&iacute;a padre</th>
+						</tr>
+						{% for category in categories %}
+							{{ macros.categoryBlock(category, category.id_categoria_padre) }}
+						{% else %}
+						<tr>	
+							<td colspan="3">No hay categor&iacute;as disponibles</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div class="box-footer">
+				<button id="addCategory" type="submit" class="btn btn-info pull-left">Nueva catgor&iacute;a</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<!-- FIN EDITOR CATEGORIAS -->
+<script>
+{% for category in allCategories  %}
+$("#m_{{category.id_categoria}}").click(function(){
+
+	var conf = {
+		url: baseURL+'interfaz/Categories.getCategory',
+		json: {apiTK: localStorage.getItem("apiTK"), categoryId: {{category.id_categoria}} },
+		container: $("#app-mainContainer"), 
+		obtainToken: true, 
+		emptyContainer: true
+	};
+	genericInterfaceCall(conf);
+});
+{% endfor %}
+
+addCategory = function(){
+	var conf = {
+		url: baseURL+'interfaz/Categories.newCategory',
+		json: {apiTK: localStorage.getItem("apiTK") },
+		container: $("#app-mainContainer"), 
+		obtainToken: true, 
+		emptyContainer: true
+	};
+	genericInterfaceCall(conf);
+}
+
+$("#addCategory").click(addCategory);
+</script>
+</section>

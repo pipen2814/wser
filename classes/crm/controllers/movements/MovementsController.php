@@ -4,7 +4,7 @@ namespace crm\controllers\movements;
 
 use crm\CRMController;
 use php\Hashtable;
-//use crm\factories\Managers;
+use crm\factories\ORM;
 use crm\factories\Managers;
 
 /**
@@ -67,7 +67,7 @@ class MovementsController extends CRMController {
 		//TODO:: Crear el metodo MovementManager()->createNewMovement
 		if(!is_null($args->APIUserId) && !is_null($args->accountId) && !is_null($args->type) && !is_null($args->movement) && !is_null($args->price) ){
 			$reportDate = (is_null($args->reportDate)?null:$args->reportDate);
-			$mov = Managers::MovementManager()->createNewMovement($args->APIUserId, $args->accountId, $args->type, $args->movement, $args->price, $reportDate);
+			$mov = Managers::MovementManager()->createNewMovement($args->APIUserId, $args->accountId, $args->type, $args->movement, $args->price, $reportDate, $args->categoryId);
 			$model->status = "OK";
 		}else{
 			$model->status = "KO";
@@ -95,6 +95,27 @@ class MovementsController extends CRMController {
 		}
 	}
 
+	/**
+	 * @api
+	 * Metodo para eliminar un movimiento.
+	 *
+	 * @param $model
+	 * @param $args
+	 *
+	 */
+	public function deleteAction(\stdClass $model, $args){
+		if(!is_null($args->APIUserId) && !is_null($args->movementId)){
+			$orm = ORM::Movements()->getByPK($args->movementId);
+			if($orm){
+				$orm->delete();
+				$model->status = "OK";
+			}else
+				$model->status = "KO";
+		}else{
+			$model->status = "KO";
+			$model->message = "Falta el parametro requerido 'movementId' o no tiene un token correcto.";
+		}
+	}
 
 
 	protected function fillMovement(&$node, $resultSet){
@@ -108,7 +129,7 @@ class MovementsController extends CRMController {
 			$movement->amount = $mov->importe;
 			$movement->creationDate = $mov->fecha_creacion;
 			$movement->reportDate = $mov->fecha_informe;
-			$movement->groupId = $mov->id_grupo;
+			$movement->categoryId = $mov->id_categoria;
 			$node[] = $movement;
 		}
 	}

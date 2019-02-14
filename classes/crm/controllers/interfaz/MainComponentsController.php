@@ -8,6 +8,7 @@ use php\Session;
 use php\XMLModel;
 use php\ViewGenerator;
 use crm\factories\Managers;
+use crm\factories\ORM;
 
 /**
  * Pagina de logueo
@@ -43,6 +44,17 @@ class MainComponentsController extends CRMController {
 			$data['accounts'][] = $ac;
 		}
 
+		$cats = array();
+		$categories = ORM::Categories()->getAll();
+		while($cat = $categories->next()){
+			$cats[] = array(
+				'id_categoria' => $cat->id_categoria
+				,'id_categoria_padre' => $cat->id_categoria_padre
+				,'categoria' => $cat->categoria
+			);
+		}
+		$data['categories'] = $cats;
+
 		$userId = $args->APIUserId;
 		$this->fillLastMovements($userId, $data);
 		$this->fillMonthChart($userId, $data);
@@ -64,6 +76,11 @@ class MainComponentsController extends CRMController {
 		$data = array();
 		$page = "menu-left";
 		$view = new ViewGenerator($page);
+		$user = new \stdClass();
+
+		$usr = ORM::Users()->getByPK($args->APIUserId);
+		$user->usuario = $usr->usuario;
+		$data['user'] = $user;
 		$view->setData($data);
 		echo $view->getOutput();
 		die;
@@ -141,6 +158,10 @@ class MainComponentsController extends CRMController {
 			$mv['id_movimiento'] = $movement->id_movimiento;
 			$mv['movimiento'] = $movement->movimiento;
 			$mv['importe'] = $movement->importe;
+			$category = ORM::Categories()->getByPK($movement->id_categoria);
+			if($category){
+				$mv['categoria'] = $category->categoria;
+			}
 			$mv['fecha_informe'] = explode(" ", $movement->fecha_informe)[0];
 			$data['movements'][] = $mv;
 		}
@@ -191,8 +212,10 @@ class MainComponentsController extends CRMController {
 			$month = $date1->diff($date2)->m;
 			if($movement->tipo == 0){
 				$data['monthChart']['expenses'][$month] += $movement->importe;
-			}else{
+			}elseif($movement->tipo == 1){
 				$data['monthChart']['incomes'][$month] += $movement->importe;
+			}else{ //el 2 son transferencias internas, de momento no hacemos nada con ellas.
+
 			}
 		}
 	}

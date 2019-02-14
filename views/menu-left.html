@@ -1,6 +1,10 @@
 	<li class="header">Men&uacute;</li>
         <li class="active"><a href="#" id="menu-dashboard"><i class="fa fa-home"></i> <span>Inicio</span></a></li>
-        <li><a href="#" id="menu-etiquetas"><i class="fa fa-bookmark-o"></i> <span>Administrar etiquetas</span></a></li>
+        <li><a href="#" id="menu-categorias"><i class="fa fa-bookmark-o"></i> <span>Administrar categor&iacute;as</span></a></li>
+        <li><a href="#" id="menu-etiquetas"><i class="fa fa-tags"></i> <span>Administrar etiquetas</span></a></li>
+
+
+{% if user.usuario == 'pipen' %}
         <li class="treeview">
           <a href="#">
             <i class="fa fa-files-o"></i>
@@ -82,12 +86,30 @@
           </ul>
         </li>
         <li><a href="https://adminlte.io/docs"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
+{% endif %}
+
+
+
+
 	<li style="display:none">
 		<script>
 			menu = function(option){
 				switch(option){
 					case 'menu-dashboard':
 						window.location.replace("app.html");
+						break;
+					case 'menu-categorias':
+
+						var conf = {
+							url: baseURL+'interfaz/Categories.adminCategories', 
+							json: {apiTK: localStorage.getItem("apiTK"), usuario: localStorage.getItem("usuario") }, 
+							container: $("#app-mainContainer"), 
+							obtainToken: true, 
+							emptyContainer: true,
+							addToNavigation: false
+						};
+						genericInterfaceCall(conf);
+						
 						break;
 					case 'menu-etiquetas':
 

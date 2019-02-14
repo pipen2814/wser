@@ -25,7 +25,7 @@ class Movements extends BaseORM{
 		"importe" => "importe",
 		"fecha_creacion" => "fechaCreacion",
 		"fecha_informe" => "fechaInforme",
-		"id_grupo" => "idGrupo",
+		"id_categoria" => "idCategoria",
 		"id_movimiento_programado" => "idMovimientoProgramado"
 	);
 }
