@@ -67,7 +67,8 @@ class MovementsController extends CRMController {
 		//TODO:: Crear el metodo MovementManager()->createNewMovement
 		if(!is_null($args->APIUserId) && !is_null($args->accountId) && !is_null($args->type) && !is_null($args->movement) && !is_null($args->price) ){
 			$reportDate = (is_null($args->reportDate)?null:$args->reportDate);
-			$mov = Managers::MovementManager()->createNewMovement($args->APIUserId, $args->accountId, $args->type, $args->movement, $args->price, $reportDate, $args->categoryId);
+			$destinyAccountId = (is_null($args->destinyAccountId)?null:$args->destinyAccountId);
+			$mov = Managers::MovementManager()->createNewMovement($args->APIUserId, $args->accountId, $args->type, $args->movement, $args->price, $reportDate, $args->categoryId, $destinyAccountId);
 			$model->status = "OK";
 		}else{
 			$model->status = "KO";

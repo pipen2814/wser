@@ -214,7 +214,7 @@ class MainComponentsController extends CRMController {
 				$data['monthChart']['expenses'][$month] += $movement->importe;
 			}elseif($movement->tipo == 1){
 				$data['monthChart']['incomes'][$month] += $movement->importe;
-			}else{ //el 2 son transferencias internas, de momento no hacemos nada con ellas.
+			}else{ //los tipos 2 y 3 son transferencias internas, de momento no hacemos nada con ellas.
 
 			}
 		}

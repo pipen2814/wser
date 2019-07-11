@@ -1,63 +1,129 @@
+{% macro movement(context, movement) %}
+{% import _self as self %}
+<tr id="m_{{movement.id_movimiento}}">
+	<td>{{movement.cuenta}}</td>
+	<td class="hidden-xs">{{movement.usuario}}</td>
+	<td>{{movement.fecha}}</td>
+	<td class="hidden-xs">{{movement.hora}}</td>
+	<td class="hidden-xs">{{movement.movimiento}}</td>
+	<td style="{% if movement.tipo in [1,3] %} color:green; {% elseif movement.tipo in [0,2] %} color:red; {% else %} color:black; {% endif %}">
+		{{movement.importe}}
+	</td>
+	<td>{{movement.categoria}}</td>
+</tr>
+{% endmacro %}
+
+{% macro movements(context, movements, currentPage) %}
+{% import _self as self %}
+{% for movement in movements %}
+	{{self.movement(context, movement)}}
+{% endfor %}
+{{ self.moreMovementsButton(context, currentPage) }}
+{% endmacro %}
+
+{% macro moreMovementsButton(context, currentPage) %}
+{% import _self as self %}
+{% if context.moreMovements == 1 %}
+	<tr class="moreMovements">
+		<td colspan="7">
+			<a class="btn btn-moreMovements">
+				<i class="fa fa-repeat"></i> Cargar m&aacute;s
+			</a>
+			<script>
+				$(".btn-moreMovements").click(function(){
+					var conf = {
+						url: baseURL+'interfaz/Accounts.getMoreMovementsForAccount',
+						json: {
+							apiTK: localStorage.getItem("apiTK"), 
+							accountId: {{context.accountId}},
+							pageNumber: {{context.pageNumber}}
+						},
+						container: $("#movementsBody"), 
+						obtainToken: true, 
+						emptyContainer: false
+					};
+					genericInterfaceCall(conf);
+
+					$(".moreMovements").remove();
+				});
+			</script>
+		</td>
+	</tr>
+{% else %}
+AAAA
+{% endif %}
+{% endmacro %}
+
+
+{% macro account(context) %}
+{% import _self as self %}
 <section class="content">
 
-<!-- ULTIMOS MOVIMIENTOS -->
+<!-- CUENTA -->
 <div class="row">
 	<div class="col-xs-12">
 		<div class="box">
 			<div class="box-header">
-				<h3 class="box-title">Movimientos en {{account.name}}</h3>
+				<h3 class="box-title">Movimientos en {{context.account.name}}</h3>
 
-				<div class="box-tools hidden-xs">
-					<div class="input-group input-group-sm" style="width: 150px;">
-						<input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
-
-						<div class="input-group-btn">
-							<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-						</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<div style="float:left;">
+						<label>Cuenta</label>
+						<select id="id_cuenta" name="id_cuenta">
+							<option value="-1">Todas</option>
+						{% for account in context.accounts %}
+						<option value="{{ account.id_cuenta }}" {{ (account.id_cuenta == context.accountId) ? 'selected' : '' }}>{{ account.cuenta }}</option>
+						{% else %}
+							<option>No hay cuentas disponibles</option>
+						{% endfor %}
+						</select>
 					</div>
+					<div style="float:left;">
+						<label>Tipo</label>
+						<select id="id_tipo" name="id_tipo">
+							<option value="-1">Todas</option>
+						{% for type in context.movementTypes %}
+							<option value="{{ type.id_tipo }}">{{ type.tipo_movimiento }}</option>
+						{% else %}
+							<option>No hay tipos de movimiento disponibles</option>
+						{% endfor %}
+						</select>
+					</div>
+
+
+					<button id="filterMovements" type="button" class="btn btn-default">Filtrar</button>
 				</div>
+
 			</div>
 			<div class="box-body table-responsive no-padding">
 				<table class="table table-hover">
-					<tbody>
+					<thead>
 						<tr>
 							<th>Cuenta</th>
-							<th>Usuario</th>
+							<th class="hidden-xs">Usuario</th>
 							<th>Fecha</th>
 							<th class="hidden-xs">Hora</th>
 							<th class="hidden-xs">Concepto</th>
 							<th>Importe</th>
-							<th class="hidden-xs">Categor&iacute;a</th>
+							<th>Categor&iacute;a</th>
 						</tr>
-						{% for movement in movements %}
-						<tr id="m_{{movement.id_movimiento}}">
-							<td>{{movement.cuenta}}</td>
-							<td>{{movement.usuario}}</td>
-							<td>{{movement.fecha}}</td>
-							<td class="hidden-xs">{{movement.hora}}</td>
-							<td class="hidden-xs">{{movement.movimiento}}</td>
-							<td style="{% if movement.tipo == 1 %} color:green; {% else %} color:red; {% endif %}">{{movement.importe}}</td>
-							<td class="hidden-xs">{{movement.categoria}}</td>
-						</tr>
+					</thead>
+					<tbody id="movementsBody">
+						{% for movement in context.movements %}
+							{{ self.movement(context, movement) }}
 						{% else %}
 						<tr>	
 							<td colspan="7">No hay movimientos disponibles</td>
 						</tr>
 						{% endfor %}
-						{% if moreMovements == 1 %}
-						<tr class="moreMovements">
-							<td colspan="7">
-								<a class="btn btn-moreMovements">
-									<i class="fa fa-repeat"></i> Cargar m&aacute;s
-								</a>
-							</td>
-						</tr>
-						{% endif %}
-
+						<!--BOTON  -->
+						{{self.moreMovementsButton(context, context.currentPage)}}
 					</tbody>
 				</table>
 				<script>
-					{% for movement in movements %}
+					{% for movement in context.movements %}
 					$("#m_{{movement.id_movimiento}}").click(function(){
 
 						var conf = {
@@ -70,19 +136,36 @@
 						genericInterfaceCall(conf);
 					});
 					{% endfor %}
+
+					$('#filterMovements').click(function(){
+						var conf = {
+							url: baseURL+'interfaz/Accounts.getAccount',
+							json: {
+								apiTK: localStorage.getItem("apiTK"), 
+								accountId: $('#id_cuenta').val(), 
+								movementType: $('#id_tipo').val() 
+							},
+							container: $("#app-mainContainer"), 
+							obtainToken: true, 
+							emptyContainer: true
+						};
+						genericInterfaceCall(conf);
+
+					});
 				</script>
 			</div>
 		</div>
 	</div>
 </div>
-<!-- FIN ULTIMOS MOVIMIENTOS -->
-
-
-
-
-<script>
-$(".btn-moreMovements").click(function(){
-	$(".moreMovements").remove();
-});
-</script>
+<!-- FIN CUENTA -->
 </section>
+{% endmacro %}
+{% import _self as macros %}
+
+{% if page == 'movements' %} {# 'movements' es para pasar por parametro un listado de movimientos, sirve para recargar listados. #}
+	{{ macros.movements(_context, movements, pageNumber) }}
+{% elseif page == 'account' %}
+	{{ macros.account(_context) }}
+{% else %} {# Por defecto lanza la pagina de cuenta #}
+No se esta pasando el nombre de p&aacute;gina. Fichero account.html
+{% endif %}

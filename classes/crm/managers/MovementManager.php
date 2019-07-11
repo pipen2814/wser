@@ -66,6 +66,16 @@ class MovementManager extends parentClass {
 			}
 		}
 
+		$movementTypes = "";
+		if($filters->has("movementType")){
+			if(is_array($filters->movementType)){
+				//TODO:: implementar varios tipos de movimiento.
+			}else{
+				$movementTypes = " and m.tipo = ".$filters->movementType." ";
+			}
+		}
+
+
 		if($filters->has("account") && is_array($filters->account) ){
 			$account = " and c.id_cuenta in (".implode(',',$filters->account).")";
 		}else{
@@ -83,13 +93,13 @@ class MovementManager extends parentClass {
 				from movimientos m 
 				join usuarios u using (id_usuario)
 				join cuentas c using (id_cuenta)
-				where 1=1 $userId $account $dates $orderBy $limit");
+				where 1=1 $userId $account $dates $movementTypes $orderBy $limit");
 		$rs = $db->getRs();
 
 		return $rs;
 	}
 
-	public static function createNewMovement($userId, $accountId, $type, $movement, $price, $reportDate = null, $categoryId = null){
+	public static function createNewMovement($userId, $accountId, $type, $movement, $price, $reportDate = null, $categoryId = null, $destinyAccountId){
 		$movementRegistered = false;
 		//Comprobamos que exista la cuenta, si no existe devolvemos false
 		$account = ORM::Accounts()->getByPK($accountId);
@@ -112,6 +122,24 @@ class MovementManager extends parentClass {
 					$mv->idCategoria = $categoryId;
 					$mv->save();
 					$movementRegistered = true;
+					if(!is_null($destinyAccountId)){
+						$destinyAccount = ORM::Accounts()->getByPK($destinyAccountId);
+						if($destinyAccount){
+							$mv2 = ORM::Movements();
+							$mv2->idUsuario = $userId;
+							$mv2->idCuenta = $destinyAccountId;
+							$mv2->tipo = 3; //Recepcion de transferencia
+							$mv2->movimiento = $movement;
+							$mv2->importe = $price;
+							if(is_null($reportDate)){
+								$reportDate = date("Y-m-d H:i:s");
+							}
+							$mv2->fechaInforme = $reportDate;
+							$mv2->idCategoria = $categoryId;
+							$mv2->save();
+						}
+						
+					}
 				}
 			}
 			if($movementRegistered == false){
@@ -126,13 +154,12 @@ class MovementManager extends parentClass {
 		//Comprobamos que exista el movimiento, si no existe devolvemos false
 		$mv = ORM::Movements()->getByPK($args->movementId);
 		if($mv){
-			$mv = ORM::Movements();
-			$mv->idUsuario = $userId;
 			if($args->has('accountId')) $mv->idCuenta = $args->accountId;
 			if($args->has('type'))$mv->tipo = $args->type;
 			if($args->has('movement'))$mv->movimiento = $args->movement;
 			if($args->has("price"))$mv->importe = $args->price;
 			if($args->has("categoryId"))$mv->idCategoria = $args->categoryId;
+			if($args->has("reportDate"))$mv->fechaInforme = $args->reportDate;
 			$mv->save();
 		}else{
 			return false;

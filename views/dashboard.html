@@ -37,7 +37,7 @@
 					</div>
 					<div class="form-group">
 						<label>Tipo de movimiento</label>
-						<select id="tipo" class="form-control">
+						<select id="tipo" class="form-control" onchange="showHideDestinyAccount()">
 							<option value="0">Gasto</option>
 							<option value="1">Ingreso</option>
 							<option value="2">Transferencia interna</option>
@@ -50,6 +50,16 @@
 					<div class="form-group">
 						<label>Cuenta</label>
 						<select id="id_cuenta" class="form-control">
+							{% for account in accounts %}
+							<option value="{{ account.id_cuenta }}">{{ account.cuenta }}</option>
+							{% else %}
+							<option>No hay cuentas disponibles</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div id="destinyAccountBlock" class="form-group" style="display:none">
+						<label>Cuenta destino</label>
+						<select id="id_cuenta_destino" class="form-control">
 							{% for account in accounts %}
 							<option value="{{ account.id_cuenta }}">{{ account.cuenta }}</option>
 							{% else %}
@@ -178,7 +188,7 @@
 							<td>{{movement.usuario}}</td>
 							<td>{{movement.fecha_informe}}</td>
 							<td class="hidden-xs">{{movement.movimiento}}</td>
-							<td style="{% if movement.tipo == 1 %} color:green; {% elseif movement.tipo == 0 %} color:red; {% else %}color:black; {% endif %}">{{movement.importe}}</td>
+							<td style="{% if (movement.tipo == 1) or (movement.tipo == 3) %} color:green; {% elseif (movement.tipo == 0) or (movement.tipo == 2) %} color:red; {% else %}color:black; {% endif %}">{{movement.importe}}</td>
 							<td class="hidden-xs">{{movement.categoria}}</td>
 						</tr>
 
@@ -198,7 +208,16 @@
 
 
 
+
 <script>
+function showHideDestinyAccount(){
+	if($("#tipo").val() == 2){
+		$("#destinyAccountBlock").css("display", "block");
+	}else{
+		$("#destinyAccountBlock").css("display", "none");
+	}
+}
+
 
 function addMovement(){
 	var url = baseURL+"movements/movements.create";
@@ -211,6 +230,10 @@ function addMovement(){
 		movement:$("#movimiento").val(),
 		price:$("#precio").val()
 	};
+
+	if($("#tipo").val() == 2){
+		json.destinyAccountId = $("#id_cuenta_destino").val();
+	}
 	var callback = function(data){
 		if(data.status == 'OK'){
 			alert("El movimiento se ha guardado correctamente.");

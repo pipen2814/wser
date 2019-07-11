@@ -44,6 +44,7 @@ class MovementsController extends CRMController {
 			$mv['id_categoria'] = $movement->idCategoria;
 			$mv['fecha'] = explode(" ", $movement->fechaInforme)[0];
 			$mv['hora'] = explode(" ", $movement->fechaInforme)[1];
+			$mv['fecha_informe'] = $movement->fechaInforme;
 			$data['movement'] = $mv;
 		}
 

@@ -5,6 +5,8 @@
 
 
 {% if user.usuario == 'pipen' %}
+        <li><a href="#" id="menu-informes"><i class="fa fa-pie-chart"></i> <span>Informes</span></a></li>
+
         <li class="treeview">
           <a href="#">
             <i class="fa fa-files-o"></i>
@@ -115,6 +117,19 @@
 
 						var conf = {
 							url: baseURL+'interfaz/Labels.adminLabels', 
+							json: {apiTK: localStorage.getItem("apiTK"), usuario: localStorage.getItem("usuario") }, 
+							container: $("#app-mainContainer"), 
+							obtainToken: true, 
+							emptyContainer: true,
+							addToNavigation: false
+						};
+						genericInterfaceCall(conf);
+						
+						break;
+					case 'menu-informes':
+
+						var conf = {
+							url: baseURL+'interfaz/Reports.dashboard', 
 							json: {apiTK: localStorage.getItem("apiTK"), usuario: localStorage.getItem("usuario") }, 
 							container: $("#app-mainContainer"), 
 							obtainToken: true, 

@@ -37,6 +37,10 @@
 						</select>
 					</div>
 					<div class="form-group">
+						<label>Fecha informe</label>
+				<input id="fecha_informe" name="fecha_informe" type="text" class="form-control" placeholder="formato YYYY-MM-DD HH:MM:SS ..." value="{{movement.fecha_informe}}" >
+					</div>
+					<div class="form-group">
 						<label>Categor&iacute;a</label>
 						<select id="id_categoria" class="form-control">
 							{% for category in categories %}
@@ -88,6 +92,7 @@ $("#saveMovementChanges").click(function(){
 		movement:$("#movimiento").val(),
 		movementId:{{movement.id_movimiento}},
 		categoryId:$("#id_categoria").val(),
+		reportDate:$("#fecha_informe").val(),
 		price:$("#precio").val()
 	};
 

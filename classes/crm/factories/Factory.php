@@ -34,10 +34,11 @@ class Factory extends BaseObject {
 	 * @return mixed Instancia de una clase mediante Factory.
 	 */
 	public static function __callStatic( $name, $arguments ){
-
+/*
+ 		//Se comenta porque no permite crear 2 instancias seguidas y hacer un save de ambas, error de duplicate entry en la segunda.
 		if ( array_key_exists($name, self::$instances) )
 			return self::$instances[$name];
-
+ */
 		return self::getFullNamespace($name, $arguments[0]['extraNS']);
 
 	}
